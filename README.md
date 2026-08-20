@@ -1,4 +1,4 @@
-# DevOps CI/CD Kubernetes Demo Project
+# DevOps CI/CD Kubernetes Project
 
 A complete, runnable, end-to-end DevOps pipeline you can run entirely on a **Windows 11 laptop** with **Docker Desktop** — no AWS account required.
 
