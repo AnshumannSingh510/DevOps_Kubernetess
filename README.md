@@ -9,7 +9,6 @@
 [![ArgoCD](https://img.shields.io/badge/ArgoCD-GitOps-EF7B4D.svg?style=flat&logo=argo)](https://argo-cd.readthedocs.io/)
 [![Prometheus](https://img.shields.io/badge/Prometheus-Monitoring-E6522C.svg?style=flat&logo=prometheus)](https://prometheus.io/)
 [![Grafana](https://img.shields.io/badge/Grafana-Observability-F46800.svg?style=flat&logo=grafana)](https://grafana.com/)
-[![Trivy](https://img.shields.io/badge/Trivy-Security_Scan-1904DA.svg?style=flat&logo=aquasecurity)](https://trivy.dev/)
 
 An enterprise-grade, end-to-end DevOps and GitOps platform featuring automated CI/CD pipelines, static code analysis, container vulnerability scanning, declarative Kubernetes deployments with zero-downtime rolling updates, GitOps continuous reconciliation, and full-stack observability.
 
