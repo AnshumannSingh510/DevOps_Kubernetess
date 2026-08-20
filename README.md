@@ -81,14 +81,13 @@ flowchart TD
 | Domain | Technology | Purpose |
 |---|---|---|
 | **Application** | Java 17, Spring Boot 3, Maven | REST API with Micrometer metrics and health actuators |
-| **Testing & Coverage** | JUnit 5, MockMvc, JaCoCo | Automated unit testing and code coverage reporting |
+| **Testing & Coverage** | JUnit 5 | Automated unit testing and code coverage reporting |
 | **Code Quality** | SonarQube Community Edition | Static code analysis, bugs, security vulnerabilities, quality gate |
-| **Containerization** | Docker, Temurin JRE 17 | Multi-stage, minimal attack surface, non-root execution |
-| **Security Scanning** | Trivy | Image CVE scanning prior to registry push |
+| **Containerization** | Docker | Multi-stage, minimal attack surface, non-root execution |
 | **CI Automation** | Jenkins | Orchestration of testing, quality checks, build, and deployment |
 | **Container Orchestration** | Kubernetes | High-availability pod scheduling, auto-recovery, service discovery |
 | **GitOps** | ArgoCD | Declarative Git-driven deployment and continuous state synchronization |
-| **Metrics & Monitoring** | Prometheus, kube-state-metrics, cAdvisor | Time-series metric collection and cluster state metrics |
+| **Metrics & Monitoring** | Prometheus | Time-series metric collection and cluster state metrics |
 | **Visualization** | Grafana | Pre-provisioned dynamic infrastructure and JVM dashboards |
 | **Alerting** | Alertmanager | Automated alerting on high latency, error rate, pod restarts, and resource saturation |
 
