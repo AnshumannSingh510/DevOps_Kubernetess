@@ -9,7 +9,7 @@ metadata:
 spec:
   description: Project for the devops-demo CI/CD sample application
   sourceRepos:
-    - "https://github.com/<your-username>/devops-kubernetes-project.git"
+    - https://github.com/AnshumannSingh510/DevOps_Kubernetess.git
   destinations:
     - namespace: devops-demo
       server: https://kubernetes.default.svc

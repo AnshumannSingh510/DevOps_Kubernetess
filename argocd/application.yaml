@@ -15,7 +15,7 @@ spec:
   # a folder on your local disk.
   # ---------------------------------------------------------------------
   source:
-    repoURL: https://github.com/<your-username>/devops-kubernetes-project.git
+    repoURL: https://github.com/AnshumannSingh510/DevOps_Kubernetess.git
     targetRevision: main
     path: k8s
 
