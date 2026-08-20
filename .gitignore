@@ -1,0 +1,40 @@
+# Secrets - never commit
+.env
+*.env
+!.env.example
+
+# Maven / Java
+app/target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+hs_err_pid*
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Kubernetes local kubeconfig copies (if ever placed in-repo)
+kubeconfig*.yaml
+!k8s/**/*.yaml
+
+# Terraform (optional AWS/EKS advanced section)
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# Jenkins/Sonar local runtime data if ever bind-mounted into the repo
+jenkins_home/
+sonarqube_data/

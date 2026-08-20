@@ -1,0 +1,93 @@
+name: devops-ci
+
+services:
+  # -------------------------------------------------------------------
+  # Jenkins — built from a small custom image (see docker/jenkins.Dockerfile)
+  # so the Docker CLI is available inside Jenkins to build/push app images.
+  # -------------------------------------------------------------------
+  jenkins:
+    build:
+      context: .
+      dockerfile: jenkins.Dockerfile
+    container_name: jenkins
+    restart: unless-stopped
+    ports:
+      - "8081:8080"   # Jenkins UI  (host 8081 -> avoids clashing with the app's 8080)
+      - "50000:50000" # Jenkins agent port
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      # Mounting the host Docker socket lets Jenkins run `docker build` /
+      # `kubectl` on the host's Docker Desktop engine, WITHOUT running the
+      # Jenkins container itself in --privileged mode. See README section 13
+      # for the full explanation of this tradeoff.
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${USERPROFILE:-~}/.kube:/var/jenkins_home/.kube:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/login || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    networks:
+      - ci-network
+
+  # -------------------------------------------------------------------
+  # SonarQube — static code analysis / quality gate
+  # -------------------------------------------------------------------
+  sonarqube:
+    image: sonarqube:10.6-community
+    container_name: sonarqube
+    restart: unless-stopped
+    depends_on:
+      sonarqube-db:
+        condition: service_healthy
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_JDBC_URL=jdbc:postgresql://sonarqube-db:5432/sonar
+      - SONAR_JDBC_USERNAME=sonar
+      - SONAR_JDBC_PASSWORD=${SONAR_DB_PASSWORD:-sonar}
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9000/api/system/status | grep -q '\"status\":\"UP\"' || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 15
+      start_period: 60s
+    networks:
+      - ci-network
+
+  sonarqube-db:
+    image: postgres:16-alpine
+    container_name: sonarqube-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=${SONAR_DB_PASSWORD:-sonar}
+      - POSTGRES_DB=sonar
+    volumes:
+      - sonarqube_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sonar"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ci-network
+
+networks:
+  ci-network:
+    driver: bridge
+
+volumes:
+  jenkins_home:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  sonarqube_db_data:

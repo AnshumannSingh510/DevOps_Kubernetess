@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devops-demo
+  namespace: argocd
+  finalizers:
+    # Ensures ArgoCD cleans up all managed resources if this Application is deleted
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  # ---------------------------------------------------------------------
+  # IMPORTANT: replace this with the URL of YOUR fork of this repository.
+  # ArgoCD needs a real Git remote it can poll/watch — it cannot watch
+  # a folder on your local disk.
+  # ---------------------------------------------------------------------
+  source:
+    repoURL: https://github.com/<your-username>/devops-kubernetes-project.git
+    targetRevision: main
+    path: k8s
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: devops-demo
+
+  syncPolicy:
+    automated:
+      prune: true       # Delete resources that are removed from Git
+      selfHeal: true     # Revert any manual/out-of-band cluster changes back to Git state
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - ApplyOutOfSyncOnly=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

@@ -1,0 +1,47 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: "default-local"
+  group_by: ["alertname", "namespace"]
+  group_wait: 10s
+  group_interval: 30s
+  repeat_interval: 3h
+  routes:
+    - matchers:
+        - severity="critical"
+      receiver: "default-local"
+      continue: true
+    - matchers:
+        - severity="warning"
+      receiver: "default-local"
+
+receivers:
+  # "default-local" intentionally has no external integrations configured.
+  # Firing/resolved alerts are still fully visible in the Alertmanager UI
+  # (http://localhost:9093) and API — no email/Slack server is required
+  # for this local demo.
+  #
+  # To add real notifications later, add a slack_configs or email_configs
+  # block here, e.g.:
+  #
+  # receivers:
+  #   - name: "default-local"
+  #     slack_configs:
+  #       - api_url: "https://hooks.slack.com/services/XXX/YYY/ZZZ"
+  #         channel: "#alerts"
+  #         send_resolved: true
+  #     email_configs:
+  #       - to: "team@example.com"
+  #         from: "alertmanager@example.com"
+  #         smarthost: "smtp.example.com:587"
+  #         auth_username: "alertmanager@example.com"
+  #         auth_password: "use-a-secret-not-a-plaintext-password"
+  - name: "default-local"
+
+inhibit_rules:
+  - source_matchers:
+      - severity="critical"
+    target_matchers:
+      - severity="warning"
+    equal: ["alertname", "namespace"]

@@ -1,0 +1,81 @@
+groups:
+  - name: application-alerts
+    rules:
+      - alert: ApplicationDown
+        expr: up{job="devops-demo-app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "devops-demo application is down"
+          description: "The devops-demo application target has been unreachable for more than 1 minute."
+
+      - alert: HighErrorRate
+        expr: |
+          (
+            sum(rate(http_server_requests_seconds_count{application="devops-demo", status=~"5.."}[5m]))
+            /
+            sum(rate(http_server_requests_seconds_count{application="devops-demo"}[5m]))
+          ) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High HTTP 5xx error rate on devops-demo"
+          description: "More than 5% of requests have returned HTTP 5xx over the last 5 minutes."
+
+      - alert: HighLatency
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(http_server_requests_seconds_bucket{application="devops-demo"}[5m])) by (le)
+          ) > 1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High p95 latency on devops-demo"
+          description: "95th percentile response time has exceeded 1 second for 2 minutes."
+
+  - name: kubernetes-alerts
+    rules:
+      - alert: PodRestarting
+        expr: increase(kube_pod_container_status_restarts_total{namespace="devops-demo"}[15m]) > 3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pod restarting frequently"
+          description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} has restarted more than 3 times in 15 minutes."
+
+      - alert: PodNotReady
+        expr: kube_pod_status_ready{namespace="devops-demo", condition="true"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Pod not ready"
+          description: "Pod {{ $labels.pod }} has not been ready for more than 5 minutes."
+
+  - name: resource-alerts
+    rules:
+      - alert: HighCPU
+        expr: |
+          sum(rate(container_cpu_usage_seconds_total{namespace="devops-demo"}[5m])) by (pod)
+          > 0.45
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "Pod {{ $labels.pod }} CPU usage has exceeded 90% of its 500m limit for 5 minutes."
+
+      - alert: HighMemory
+        expr: |
+          sum(container_memory_working_set_bytes{namespace="devops-demo"}) by (pod)
+          / (512 * 1024 * 1024) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Pod {{ $labels.pod }} memory usage has exceeded 90% of its 512Mi limit for 5 minutes."

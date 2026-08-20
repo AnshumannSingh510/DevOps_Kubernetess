@@ -1,0 +1,21 @@
+# OPTIONAL: a dedicated ArgoCD AppProject instead of using "default".
+# Useful once you have more than one Application, or want to restrict
+# what a team/app is allowed to deploy.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: devops-demo-project
+  namespace: argocd
+spec:
+  description: Project for the devops-demo CI/CD sample application
+  sourceRepos:
+    - "https://github.com/<your-username>/devops-kubernetes-project.git"
+  destinations:
+    - namespace: devops-demo
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"

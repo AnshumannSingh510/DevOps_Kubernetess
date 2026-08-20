@@ -1,0 +1,13 @@
+workflow-aggregator:600.vb_57cdd26fdd7
+git:5.5.0
+github:1.39.0
+pipeline-stage-view:2.34
+credentials-binding:657.v2b_19db_2b_2c9b_
+docker-workflow:580.vc0c340686b_54
+sonar:2.17.2
+kubernetes-cli:1.13.0
+htmlpublisher:1.35
+junit:1.66
+jacoco:3.3.5
+timestamper:1.27
+ws-cleanup:0.45

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devops-demo-config
+  namespace: devops-demo
+  labels:
+    app: devops-demo
+data:
+  SPRING_PROFILES_ACTIVE: "default"
+  APP_INFO_ENV: "kubernetes-local"
+  JAVA_TOOL_OPTIONS: "-Duser.timezone=UTC"

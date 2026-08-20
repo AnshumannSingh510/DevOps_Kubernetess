@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: devops-demo
+
+server:
+  port: 8080
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.5, 0.95, 0.99
+
+info:
+  app:
+    name: devops-demo
+    description: DevOps CI/CD Kubernetes demo application
+    version: 1.0.0
+
+logging:
+  level:
+    root: INFO
+    com.devops.demo: INFO
